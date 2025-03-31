@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <h1>User Profile</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="profile-container">
+            <h2>Welcome, <span id="user-email"></span></h2>
+            <h3>Update Profile</h3>
+            <form id="update-profile-form">
+                <input type="text" id="update-name" placeholder="Full Name">
+                <input type="text" id="update-phone" placeholder="Phone Number">
+                <button type="button" onclick="updateProfile()">Update</button>
+            </form>
+            <h3>Change Password</h3>
+            <form id="change-password-form">
+                <input type="password" id="current-password" placeholder="Current Password">
+                <input type="password" id="new-password" placeholder="New Password">
+                <button type="button" onclick="changePassword()">Change Password</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-Buy. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = "https://mggnfffsjizsxhnvvmfw.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nZ25mZmZzaml6c3hobnZ2bWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0MzcwNzcsImV4cCI6MjA1OTAxMzA3N30.6QWNeS0aeIcODwW6UsIxhwvqzVPchk9rgBJWJO2-vc4";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
+                document.getElementById("user-email").textContent = session.user.email;
+            } else {
+                alert("You are not logged in!");
+                window.location.href = "login.html";
+            }
+        });
+
+        async function updateProfile() {
+            const name = document.getElementById("update-name").value;
+            const phone = document.getElementById("update-phone").value;
+
+            const { error } = await supabaseClient.auth.updateUser({
+                data: { name, phone }
+            });
+
+            if (error) {
+                alert("Error updating profile: " + error.message);
+            } else {
+                alert("Profile updated successfully!");
+            }
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById("current-password").value;
+            const newPassword = document.getElementById("new-password").value;
+
+            const { error } = await supabaseClient.auth.updateUser({
+                password: newPassword
+            });
+
+            if (error) {
+                alert("Error changing password: " + error.message);
+            } else {
+                alert("Password changed successfully!");
+            }
+        }
+
+        async function logout() {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) {
+                alert("Error logging out: " + error.message);
+            } else {
+                alert("Logged out successfully!");
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+</body>
+</html>

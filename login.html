@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Auth</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin: auto;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 16px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            z-index: 1;
+        }
+        .show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein {
+            from {opacity: 0;} 
+            to {opacity: 1;}
+        }
+        @keyframes fadeout {
+            from {opacity: 1;} 
+            to {opacity: 0;}
+        }
+    </style>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    <input type="email" id="signup-email" placeholder="Email">
+    <input type="password" id="signup-password" placeholder="Password">
+    <button onclick="signUp()">Sign Up</button>
+    
+    <h2>Login</h2>
+    <input type="email" id="signin-email" placeholder="Email">
+    <input type="password" id="signin-password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    
+    <h2>Sign Out</h2>
+    <button onclick="signOut()">Sign Out</button>
+    
+    <div id="toast" class="toast"></div>
+    
+    <script>
+        const SUPABASE_URL = "https://mggnfffsjizsxhnvvmfw.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nZ25mZmZzaml6c3hobnZ2bWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0MzcwNzcsImV4cCI6MjA1OTAxMzA3N30.6QWNeS0aeIcODwW6UsIxhwvqzVPchk9rgBJWJO2-vc4";
+        
+        // Fix: Use the proper global object name from the library
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = "toast show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+        
+        async function signUp() {
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) {
+                showToast(error.message);
+            } else {
+                showToast("Sign-up successful! Check your email for verification.");
+            }
+        }
+        
+        async function login() {
+            const email = document.getElementById("signin-email").value;
+            const password = document.getElementById("signin-password").value;
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                showToast(error.message);
+            } else {
+                showToast("Login successful! Redirecting...");
+                setTimeout(() => {
+                    window.location.href = "index.html"; // Redirect to the index page
+                }, 1000);
+            }
+        }
+        
+        async function signOut() {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) {
+                showToast(error.message);
+            } else {
+                showToast("Signed out successfully!");
+                window.location.href = "/index.html"; // Redirect to the index page
+            }
+        }
+
+        function checkLoginStatus() {
+            const user = supabaseClient.auth.user();
+            if (user) {
+                showToast(`Welcome back, ${user.email}! Redirecting...`);
+                setTimeout(() => {
+                    window.location.href = "index.html"; // Redirect to the index page
+                }, 1000);
+            }
+        }
+
+        // Check login status on page load
+        document.addEventListener("DOMContentLoaded", checkLoginStatus);
+    </script>
+</body>
+</html>

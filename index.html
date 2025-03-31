@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Buy - Online Shopping</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- Add this line -->
+</head>
+<body>
+
+  <header>
+    <h1>E-Buy</h1>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#cart" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</a></li>
+            <li><a href="profile.html">Profile</a></li> <!-- Update this line -->
+            <li><a href="#" id="logout-link" onclick="logout()" style="display: none;">Logout</a></li> <!-- Add this line -->
+        </ul>
+    </nav>
+    <div class="auth-buttons">
+        <button id="login-btn" onclick="toggleLoginModal()">Login</button>
+        <button id="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+    </div>
+</header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Categories</h3>
+            <ul>
+                <li><a href="#" onclick="filterProducts('all')">All Products</a></li>
+                <li><a href="#" onclick="filterProducts('Electronics')">Electronics</a></li>
+                <li><a href="#" onclick="filterProducts('Clothing')">Clothing</a></li>
+                <li><a href="#" onclick="filterProducts('Home')">Home & Kitchen</a></li>            </ul>
+        </aside>
+
+        <main>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for products..." onkeyup="searchProducts()">
+                <button onclick="searchProducts()">Search</button>
+            </div>
+            <section class="products" id="product-list">
+            </section>
+        </main>
+    </div>
+    <div id="overlay" class="overlay" onclick="closeOverlay()">
+        <div class="overlay-content">
+            <span class="close-btn" onclick="closeOverlay()">&times;</span>
+            <img id="overlay-img" src="" alt="Product Image">
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 E-Buy. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            function toggleLoginModal() {
+                supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                    if (session && session.user) {
+                        alert("You are already logged in!");
+                    } else {
+                        window.location.href = "login.html"; // Redirect to login page
+                    }
+                });
+            }
+
+            // Attach the function to the login button
+            document.getElementById("login-btn").onclick = toggleLoginModal;
+
+            function updateAuthButtons() {
+                supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                    const logoutLink = document.getElementById("logout-link");
+                    const loginBtn = document.getElementById("login-btn");
+                    if (session && session.user) {
+                        logoutLink.style.display = "block"; // Show logout link if logged in
+                        loginBtn.style.display = "none"; // Hide login button if logged in
+                    } else {
+                        logoutLink.style.display = "none"; // Hide logout link if not logged in
+                        loginBtn.style.display = "block"; // Show login button if not logged in
+                    }
+                });
+            }
+
+            // Call the function to update button visibility on page load
+            updateAuthButtons();
+        });
+    </script>
+</body>
+</html>
