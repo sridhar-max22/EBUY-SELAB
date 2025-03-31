@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Buy - Welcome</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <h1>Welcome to E-Buy</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Shop</a></li>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" id="logout-link" onclick="logout()" style="display: none;">Logout</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button id="login-btn" onclick="toggleLoginModal()">Login</button>
+            <button id="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Your One-Stop Shopping Destination</h2>
+            <p>Discover amazing products at unbeatable prices</p>
+            <a href="index.html" class="buy-btn">Start Shopping</a>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Wide Selection</h3>
+                <p>Browse through thousands of products across multiple categories</p>
+            </div>
+            <div class="feature-card">
+                <h3>Fast Delivery</h3>
+                <p>Get your orders delivered right to your doorstep</p>
+            </div>
+            <div class="feature-card">
+                <h3>Secure Shopping</h3>
+                <p>Shop with confidence using our secure payment system</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-Buy. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
